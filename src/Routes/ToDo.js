@@ -1,8 +1,7 @@
 import express from 'express';
-import Todo from '../Models/Todo.js';
-
 import {
-  getNameById
+  getNameById,
+  getAllDataSorted
 } from '../BLL/ToDo.js';
 
 const router = express.Router();
@@ -23,9 +22,7 @@ router.get('/getNameById/:id', async (req, res, next) => {
 
 router.get('/', async (req, res, next) => {
   try {
-    res.json(await Todo.find().sort({
-      createdAt: -1
-    }));
+    res.json(await getAllDataSorted());
   } catch (err) {
     next(err);
   }
