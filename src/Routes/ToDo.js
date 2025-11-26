@@ -1,7 +1,10 @@
 import express from 'express';
 import {
   getNameById,
-  getAllDataSorted
+  getAllDataSorted,
+  createTodo,
+  updateTodoBll,
+  deleteTodoBll
 } from '../BLL/ToDo.js';
 
 const router = express.Router();
@@ -27,6 +30,49 @@ router.get('/', async (req, res, next) => {
     next(err);
   }
 });
+
+router.post('/', async (req, res, next) => {
+  try {
+    const newData = await createTodo(req.body);
+    if (newData) {
+      res.status(201).json({
+        message: 'New Todo created successfully',
+        newData: newData
+      });
+    }
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+router.put('/:id', async (req, res, next) => {
+  try {
+    const updatedData = await updateTodoBll(req.params.id, req.body);
+    if (!updatedData) return res.status(404).json({
+      error: 'Not found'
+    });
+    res.json(updatedData);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.delete('/:id', async (req, res, next) => {
+  try {
+    const removed = await deleteTodoBll(req.params.id);
+    if (!removed) return res.status(404).json({
+      error: 'Not found'
+    });
+    res.json({
+      message: 'Deleted',
+      id: removed._id
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 // router.post('/', async (req, res, next) => {
 //   try {
