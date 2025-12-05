@@ -7,6 +7,7 @@ import Pratice from "./components/pratice";
 import TodoPopup from "./components/TodoPopup";       // <- make sure file exists
 import ConfirmDialog from "./components/ConfirmDialog"; // <- make sure file exists
 import AddIcon from '@mui/icons-material/Add';
+import SideBar from "./components/sideBar.tsx";
 
 import {
   getTodos,
@@ -15,6 +16,8 @@ import {
   deleteTodo,
   type Todo,
 } from "./Api/todoApi.tsx";
+import { Fab } from "@mui/material";
+import Header from "./components/header.tsx";
 
 export default function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
@@ -22,6 +25,7 @@ export default function App() {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [todoToDelete, setTodoToDelete] = useState<Todo | null>(null);
+  const [sideBarOpen, setSideBarOpen] = useState(false);
 
   useEffect(() => {
     fetchTodos();
@@ -102,13 +106,16 @@ async function toggleCompleted(todo: Todo) {
 }
   return (
     <>
+      <Header onMenuClick={() => setSideBarOpen(true)}/>
+
+      <SideBar open={sideBarOpen} onClose={() => setSideBarOpen(false)} />
+
       <CssBaseline />
       <Container maxWidth="md" sx={{ mt: 4 }}>
-        <h1>ToDo 
-          <button onClick={openCreate}> <AddIcon/> </button>
-        </h1>
 
-        
+        <Fab color="primary" aria-label="add" onClick={openCreate}> 
+         <AddIcon  />
+        </Fab>
 
         <Pratice todos={todos} onEdit={openEdit} onDeleteRequest={requestDelete} onToggleCompleted={toggleCompleted} />
 
@@ -121,8 +128,8 @@ async function toggleCompleted(todo: Todo) {
 
         <ConfirmDialog
           open={confirmOpen}
-          title="Delete todo?"
-          description={`Are you sure you want to delete "${todoToDelete?.title}"?`}
+          title="Delete?"
+          description={`Are you sure you want to delete?`}
           onClose={() => setConfirmOpen(false)}
           onConfirm={handleDelete}
           confirmLabel="Delete"
